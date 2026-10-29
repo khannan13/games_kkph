@@ -68,22 +68,35 @@ em{font:400 1.45em/.9 var(--script);letter-spacing:0;background:var(--goldgrad);
 
 .draw{max-width:760px;margin:0 auto;width:100%;text-align:center}
 .draw h2{margin-bottom:8px}.draw .sub{color:var(--muted);margin-bottom:22px}
-.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:380px;margin:0 auto 26px}
-.deck.gone{display:none}
-.back{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold-d);border-radius:5px;outline:1px solid var(--line);outline-offset:-6px;
-  background:linear-gradient(160deg,var(--wine),var(--wine2));color:var(--gold);transition:transform .16s ease-out,opacity .4s,box-shadow .3s}
-.back b{font:600 2.1rem/1 var(--serif)}
-.back small{display:block;font:500 .56rem var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:4px;text-align:center}
-.back.win{box-shadow:0 0 0 2px var(--gold),0 0 34px rgba(232,187,79,.7)}
-.back.dim{opacity:.22}
+/* meja kartu */
+.stage{position:relative;height:calc(var(--cardw)*1.34 + 96px);max-width:560px;margin:0 auto 22px;perspective:900px;--cardw:clamp(54px,15vw,86px)}
+.stage.gone{display:none}
+.back{position:absolute;left:50%;top:50%;width:var(--cardw);aspect-ratio:3/4;border:1px solid var(--gold-d);border-radius:6px;outline:1px solid var(--line);outline-offset:-5px;
+  background:linear-gradient(160deg,var(--wine),var(--wine2));color:var(--gold);box-shadow:0 6px 16px rgba(0,0,0,.45);
+  transform:translate(-50%,-50%);transition:transform .7s cubic-bezier(.5,0,.2,1),opacity .5s,box-shadow .3s;will-change:transform}
+.back b{position:absolute;top:7px;left:9px;font:600 clamp(.8rem,2.6vw,1rem)/1 var(--serif)}
+.orn{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;border:1px solid var(--gold-d);transform:translate(-50%,-50%) rotate(45deg);opacity:.85}
+.orn::after{content:"";position:absolute;inset:22%;background:var(--goldgrad)}
+.stage.fast .back{transition:transform .26s ease-in-out}
+.stage.rolling .back{transition:transform .09s ease-out,box-shadow .09s,opacity .3s}
+.back.hot{box-shadow:0 0 0 2px var(--gold),0 0 26px rgba(232,187,79,.65)}
+.back.win{box-shadow:0 0 0 2px var(--gold),0 0 44px rgba(232,187,79,.85)}
+.back.dim{opacity:.18}
+.spark{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);pointer-events:none;z-index:50}
+/* tombol suara */
+.snd{position:fixed;right:calc(var(--cw) + 14px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:6;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line);background:rgba(10,18,51,.55);color:var(--gold);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .2s,transform .2s}
+.snd:hover{background:rgba(232,187,79,.18)}.snd:active{transform:scale(.94)}
+.snd .x{display:none}
+.snd[aria-pressed="false"] .x{display:block}.snd[aria-pressed="false"] .w1,.snd[aria-pressed="false"] .w2{display:none}
 .reveal{display:none;perspective:1000px}.reveal.on{display:block}
-.face{padding:30px 28px 28px;max-width:380px;margin:0 auto 24px;text-align:left;position:relative;animation:flip .9s cubic-bezier(.2,.8,.2,1) both}
+.face{padding:52px 28px 28px;max-width:380px;margin:0 auto 24px;text-align:left;position:relative;animation:flip .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes flip{from{transform:rotateY(90deg) scale(.9);opacity:0}to{transform:none;opacity:1}}
 .face .k{font:600 .7rem var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
 .face .n{font:600 clamp(5rem,20vw,7rem)/1 var(--serif);background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0}
 .face h3{font:700 1.7rem/1.15 var(--serif);margin-bottom:10px}
 .face p{color:var(--cream);opacity:.85;line-height:1.6}
-.face .st{position:absolute;top:24px;right:22px;border:1px solid var(--gold);color:var(--gold);font:600 .6rem var(--sans);letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;transform:rotate(5deg)}
+.face .st{position:absolute;top:20px;right:22px;border:1px solid var(--gold);color:var(--gold);font:600 .6rem var(--sans);letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;transform:rotate(5deg)}
 .reset{background:none;border:0;color:var(--muted);font:400 .72rem var(--sans);text-decoration:underline;cursor:pointer;margin-top:18px;opacity:.7}
 
 .end{text-align:center;max-width:760px;margin:0 auto}
@@ -158,8 +171,8 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     <div class="draw">
       <p class="eyebrow">Tarik Kartumu</p>
       <h2>Siapa <em>karaktermu?</em></h2>
-      <p class="sub" id="sub">Ada 9 karakter rahasia. Kamu hanya dapat satu kartu, dipilih acak.</p>
-      <div class="deck" id="deck"></div>
+      <p class="sub" id="sub" aria-live="polite">Ada 9 karakter rahasia. Kamu hanya dapat satu kartu, dipilih acak.</p>
+      <div class="stage" id="deck" aria-hidden="true"></div>
       <div class="reveal" id="reveal"></div>
       <button class="btn" id="shuffleBtn">Acak Kartu</button>
       <div class="cta" id="nextWrap" style="display:none"><button class="btn" data-next>Lanjut</button></div>
@@ -181,6 +194,9 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 </main>
 
 <div class="prog" id="prog" aria-hidden="true"></div>
+<button class="snd" id="soundBtn" type="button" aria-pressed="true" aria-label="Matikan suara">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor" stroke="none"/><path class="w1" d="M15.5 9a4 4 0 0 1 0 6"/><path class="w2" d="M18 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9.5l5 5m0-5l-5 5"/></svg>
+</button>
 
 <script>
 /* Ubah data karakter di sini: title = julukan, clue = petunjuk */
@@ -201,7 +217,7 @@ let mine=null;
 try{const v=localStorage.getItem(KEY);if(v!==null&&CHARACTERS[+v])mine=+v}catch(e){}
 
 const deck=$('deck');
-deck.innerHTML=CHARACTERS.map((_,i)=>`<div class="back"><div><b>${pad(i)}</b><small>Karakter</small></div></div>`).join('');
+deck.innerHTML=CHARACTERS.map((_,i)=>`<div class="back"><b>${pad(i)}</b><span class="orn"></span></div>`).join('');
 const backs=[...deck.children];
 
 function showCard(i){
@@ -216,28 +232,206 @@ function showCard(i){
 }
 if(mine!==null)showCard(mine);
 
-$('shuffleBtn').onclick=()=>{
+/* ===== ANIMASI PENGACAKAN: kumpul > kocok > sebar > sorotan berputar > kartu terpilih ===== */
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const say=t=>{$('sub').textContent=t};
+const T=(el,x=0,y=0,r=0,s=1,ry=0)=>{el.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) rotate(${r}deg) scale(${s}) rotateY(${ry}deg)`};
+function fisher(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+let order=backs.map((_,i)=>i),busy=false;           /* order[posisi] = nomor kartu */
+
+function slot(p){
+  const n=backs.length,d=p-(n-1)/2,cw=backs[0].offsetWidth||60;
+  const dx=Math.min(cw*.62,((deck.clientWidth||0)-cw)/(n-1));
+  return{x:d*dx,y:d*d*2.4-8,r:d*5};
+}
+function fan(){order.forEach((id,p)=>{const s=slot(p);T(backs[id],s.x,s.y,s.r);backs[id].style.zIndex=p})}
+function stack(){backs.forEach((el,i)=>{T(el,(Math.random()-.5)*5,-8+(Math.random()-.5)*5,(Math.random()-.5)*8);el.style.zIndex=i})}
+function hot(p,on){
+  const el=backs[order[p]],s=slot(p);
+  el.classList.toggle('hot',on);
+  T(el,s.x,s.y-(on?20:0),on?s.r*.3:s.r,on?1.1:1);
+  el.style.zIndex=on?30:p;
+}
+async function riffle(){
+  const ids=fisher(backs.map((_,i)=>i)),half=Math.ceil(ids.length/2),A=ids.slice(0,half),B=ids.slice(half);
+  sfxSwish();
+  A.forEach((id,k)=>T(backs[id],-62,-8-k*1.5,-9));
+  B.forEach((id,k)=>T(backs[id],62,-8-k*1.5,9));
+  await sleep(300);
+  const merged=[];for(let k=0;k<half;k++){if(A[k]!==undefined)merged.push(A[k]);if(B[k]!==undefined)merged.push(B[k])}
+  merged.forEach((id,z)=>{backs[id].style.zIndex=z;T(backs[id],(Math.random()-.5)*5,-8+(Math.random()-.5)*5,(Math.random()-.5)*8)});
+  sfxSwish(.6);
+  await sleep(300);
+}
+function sparkle(){
+  for(let i=0;i<18;i++){
+    const d=document.createElement('span');d.className='spark';deck.appendChild(d);
+    const a=Math.random()*Math.PI*2,r=70+Math.random()*80;
+    d.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},
+      {transform:`translate(calc(-50% + ${Math.cos(a)*r}px),calc(-50% + ${Math.sin(a)*r*.7}px)) scale(0)`,opacity:0}],
+      {duration:900+Math.random()*500,easing:'cubic-bezier(.1,.7,.3,1)'}).onfinish=()=>d.remove();
+  }
+}
+function finish(id){
+  mine=id;try{localStorage.setItem(KEY,id)}catch(e){}
+  showCard(id);busy=false;
+}
+fan();
+addEventListener('resize',()=>{if(!busy)fan()});
+
+$('shuffleBtn').onclick=async()=>{
+  if(busy)return;busy=true;initAudio();
   const b=$('shuffleBtn');b.disabled=true;b.textContent='Mengacak...';
-  const t=setInterval(()=>backs.forEach(el=>{
-    el.style.transform=`translate(${(Math.random()-.5)*60}px,${(Math.random()-.5)*60}px) rotate(${(Math.random()-.5)*28}deg)`;
-  }),170);
-  setTimeout(()=>{
-    clearInterval(t);
-    backs.forEach(el=>el.style.transform='');
-    const pick=Math.floor(Math.random()*CHARACTERS.length);
-    backs.forEach((el,i)=>el.classList.add(i===pick?'win':'dim'));
-    setTimeout(()=>{
-      mine=pick;
-      try{localStorage.setItem(KEY,pick)}catch(e){}
-      showCard(pick);
-    },1100);
-  },2000);
+  const pickId=Math.floor(Math.random()*backs.length);
+  order=fisher(backs.map((_,i)=>i));
+  const pos=order.indexOf(pickId);
+
+  if(RM){                                              /* tanpa gerak berlebih */
+    fan();backs.forEach((el,i)=>el.classList.add(i===pickId?'win':'dim'));
+    sfxWin();await sleep(900);return finish(pickId);
+  }
+  say('Mengumpulkan kartu...');
+  sfxGather();stack();await sleep(750);
+
+  say('Mengocok kartu...');
+  deck.classList.add('fast');
+  for(let n=0;n<3;n++)await riffle();
+  deck.classList.remove('fast');
+
+  say('Menyebar kartu...');
+  sfxFan();fan();await sleep(850);
+
+  say('Siapa yang terpilih?');
+  deck.classList.add('rolling');
+  const N=2*backs.length+pos+1;                        /* 2 putaran, berhenti tepat di kartu terpilih */
+  let prev=-1;
+  for(let k=0;k<N;k++){
+    const p=k%backs.length;
+    if(prev>=0)hot(prev,false);
+    hot(p,true);sfxTick(k/N);prev=p;
+    await sleep(55+Math.pow(k/N,3)*380);               /* makin lama makin pelan */
+  }
+  deck.classList.remove('rolling');
+
+  const w=backs[pickId];
+  order.forEach((id,p)=>{if(id!==pickId){const s=slot(p);backs[id].classList.add('dim');backs[id].classList.remove('hot');T(backs[id],s.x,s.y+26,s.r,.86)}});
+  w.classList.remove('hot');w.classList.add('win');w.style.zIndex=40;
+  T(w,0,-4,0,1.4);sfxWin();sparkle();say('Ketemu!');
+  await sleep(1400);
+  w.style.transition='transform .38s ease-in';T(w,0,-4,0,1.4,90);sfxSwish(.8);
+  await sleep(380);
+  finish(pickId);
 };
 $('reset').onclick=()=>{
   if(!confirm('Reset kartu di perangkat ini? Peserta bisa mengacak lagi.'))return;
   try{localStorage.removeItem(KEY)}catch(e){}
   location.hash='#pembuka';location.reload();
 };
+
+/* ===== SUARA: musik latar + efek, dibuat langsung di browser (tanpa file, bebas hak cipta) ===== */
+const BGM_FILE='';   /* opsional: isi 'bgm.mp3' kalau mau pakai musik sendiri (pastikan lisensinya aman) */
+const SKEY='justitia-suara';
+let ac=null,master,bgmBus,sfxBus,verb,noiseBuf,nextT=0,stepN=0,bgmTimer=null,fileAudio=null,soundOn=true;
+try{if(localStorage.getItem(SKEY)==='off')soundOn=false}catch(e){}
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+const EIGHTH=60/76/2;
+const CHORDS=[{bass:48,pad:[60,64,67,71]},{bass:45,pad:[57,60,64,67]},{bass:50,pad:[57,60,62,65]},{bass:43,pad:[55,59,62,65]}]; /* Cmaj7 Am7 Dm7 G7 */
+const ARP=[0,1,2,3,2,1,3,2];
+
+function initAudio(){
+  if(!ac){
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    ac=new AC();
+    master=ac.createGain();master.gain.value=soundOn?1:0;master.connect(ac.destination);
+    bgmBus=ac.createGain();bgmBus.gain.value=.55;bgmBus.connect(master);
+    sfxBus=ac.createGain();sfxBus.gain.value=.9;sfxBus.connect(master);
+    const len=Math.floor(ac.sampleRate*2.4),buf=ac.createBuffer(2,len,ac.sampleRate);
+    for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
+    verb=ac.createConvolver();verb.buffer=buf;
+    const wet=ac.createGain();wet.gain.value=.38;verb.connect(wet);wet.connect(master);
+  }
+  if(ac.state==='suspended')ac.resume();
+  if(soundOn)startBgm();
+}
+function startBgm(){
+  if(BGM_FILE){fileAudio=fileAudio||Object.assign(new Audio(BGM_FILE),{loop:true,volume:.3});fileAudio.play().catch(()=>{});return}
+  if(bgmTimer||!ac)return;
+  nextT=ac.currentTime+.15;bgmTimer=setInterval(scheduleBgm,120);
+}
+function stopBgm(){if(fileAudio)fileAudio.pause();clearInterval(bgmTimer);bgmTimer=null}
+
+function note(f,t,o={}){
+  const{type='triangle',vol=.09,len=.9,dest=bgmBus,a=.008,wet=true}=o;
+  const osc=ac.createOscillator(),g=ac.createGain();
+  osc.type=type;osc.frequency.value=f;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+len);
+  osc.connect(g);g.connect(dest);if(wet)g.connect(verb);
+  osc.start(t);osc.stop(t+len+.05);
+}
+function chordPad(f,t,d){
+  const g=ac.createGain(),lp=ac.createBiquadFilter();
+  lp.type='lowpass';lp.frequency.value=1300;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.028,t+.9);g.gain.setTargetAtTime(0,t+d-.9,.5);
+  lp.connect(g);g.connect(bgmBus);g.connect(verb);
+  [-6,6].forEach(det=>{const o=ac.createOscillator();o.type='triangle';o.frequency.value=f;o.detune.value=det;o.connect(lp);o.start(t);o.stop(t+d+2)});
+}
+function noise(t,dur,o={}){
+  const{vol=.03,f1=5000,f2=5000,q=1,type='highpass',dest=bgmBus}=o;
+  if(!noiseBuf){noiseBuf=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+  const s=ac.createBufferSource(),flt=ac.createBiquadFilter(),g=ac.createGain();
+  s.buffer=noiseBuf;flt.type=type;flt.Q.value=q;
+  flt.frequency.setValueAtTime(f1,t);flt.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+dur*.25);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(flt);flt.connect(g);g.connect(dest);s.start(t);s.stop(t+dur+.02);
+}
+function scheduleBgm(){
+  while(nextT<ac.currentTime+.7){
+    const c=CHORDS[Math.floor(stepN/8)%4],k=stepN%8;
+    if(k===0){
+      c.pad.forEach((m,i)=>chordPad(mtof(m),nextT+i*.03,EIGHTH*8+.4));
+      note(mtof(c.bass),nextT,{type:'sine',vol:.2,len:1.4,wet:false});
+    }
+    if(k===4)note(mtof(c.bass+7),nextT,{type:'sine',vol:.12,len:1,wet:false});
+    if(Math.random()<.82)note(mtof(c.pad[ARP[k]]+12+(Math.random()<.2?12:0)),nextT,{vol:.085,len:.9});
+    if(k%2===1)noise(nextT,.07,{vol:.018});
+    nextT+=EIGHTH;stepN++;
+  }
+}
+/* efek suara */
+const sfxOK=()=>ac&&soundOn;
+function sfxSwish(v=1){if(!sfxOK())return;noise(ac.currentTime,.22,{type:'bandpass',f1:900,f2:3800,q:.9,vol:.22*v,dest:sfxBus})}
+function sfxGather(){if(!sfxOK())return;noise(ac.currentTime,.5,{type:'bandpass',f1:500,f2:2500,q:.7,vol:.2,dest:sfxBus})}
+function sfxFan(){if(!sfxOK())return;const t=ac.currentTime;for(let i=0;i<9;i++)noise(t+i*.06,.06,{type:'bandpass',f1:2500,f2:3500,q:2,vol:.12,dest:sfxBus})}
+function sfxTick(p){if(!sfxOK())return;note(900+p*500,ac.currentTime,{vol:.14,len:.07,a:.002,dest:sfxBus,wet:false})}
+function sfxClick(){
+  if(!sfxOK())return;const t=ac.currentTime;
+  note(1320,t,{type:'sine',vol:.13,len:.14,a:.002,dest:sfxBus,wet:false});
+  note(1976,t+.035,{type:'triangle',vol:.08,len:.32,a:.003,dest:sfxBus});
+  noise(t,.04,{type:'highpass',f1:6000,f2:6000,vol:.05,dest:sfxBus});
+}
+function sfxWin(){if(!sfxOK())return;const t=ac.currentTime;[72,76,79,84,88].forEach((m,i)=>note(mtof(m),t+i*.08,{vol:.16,len:1.6,dest:sfxBus}));noise(t,.9,{f1:7000,f2:7000,vol:.05,dest:sfxBus})}
+
+const sb=$('soundBtn');
+function paintSound(){sb.setAttribute('aria-pressed',soundOn);sb.setAttribute('aria-label',soundOn?'Matikan suara':'Nyalakan suara')}
+sb.onclick=()=>{
+  soundOn=!soundOn;try{localStorage.setItem(SKEY,soundOn?'on':'off')}catch(e){}
+  paintSound();
+  if(soundOn){initAudio();if(master)master.gain.setTargetAtTime(1,ac.currentTime,.05)}
+  else{if(master)master.gain.setTargetAtTime(0,ac.currentTime,.08);stopBgm()}
+};
+['pointerdown','touchend','click','keydown'].forEach(ev=>addEventListener(ev,initAudio,{passive:true}));
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){if(ac)ac.suspend();if(fileAudio)fileAudio.pause()}
+  else if(soundOn){if(ac)ac.resume();if(fileAudio)fileAudio.play().catch(()=>{})}
+});
+paintSound();
+/* suara klik untuk semua tombol (mouse, sentuh, maupun keyboard) */
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('button');
+  if(!b||b.disabled)return;
+  initAudio();sfxClick();
+});
 
 /* slide */
 const slides=[...document.querySelectorAll('.slide')],track=$('track'),prog=$('prog');
@@ -247,6 +441,7 @@ const DRAW=slides.findIndex(s=>s.id==='karakter');
 function go(n,fromHash){
   n=Math.max(0,Math.min(slides.length-1,n));
   if(n>DRAW&&mine===null)n=DRAW;
+  if(n!==cur)sfxSwish(.45);
   cur=n;
   track.style.transform=`translateX(-${cur*100}%)`;
   slides.forEach((s,i)=>{s.classList.toggle('on',i===cur);if(i===cur)s.scrollTop=0});
