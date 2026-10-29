@@ -117,13 +117,55 @@ em{font:400 1.45em/.9 var(--script);letter-spacing:0;background:var(--goldgrad);
 .prog i.on{background:var(--gold);width:26px;border-radius:99px}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
+/* ===== FOTO POLAROID ===== */
+.booth{display:grid;grid-template-areas:"head" "pol" "ctl";max-width:760px;margin:0 auto;width:100%;text-align:center}
+.b-head{grid-area:head}.b-ctl{grid-area:ctl}
+.booth h2{margin-bottom:8px}.booth .sub{color:var(--muted);margin-bottom:26px}
+.polaroid{grid-area:pol;position:relative;width:min(100%,310px);margin:0 auto 26px;padding:14px 14px 12px;background:linear-gradient(170deg,#fbf3e2,#efe0c3);border-radius:3px;color:#3a0710;
+  box-shadow:0 24px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.7);transform:rotate(-2.2deg);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.polaroid.taken{transform:rotate(1.6deg)}
+.polaroid::before{content:"";position:absolute;top:-12px;left:50%;width:96px;height:24px;margin-left:-48px;transform:rotate(3deg);background:linear-gradient(180deg,rgba(240,196,83,.9),rgba(184,128,31,.85));box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.shot{position:relative;aspect-ratio:1;overflow:hidden;background:radial-gradient(circle at 50% 38%,#2b1020,#0b0614);box-shadow:inset 0 0 0 1px rgba(58,7,16,.4)}
+.shot video,.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.shot.live video{display:block}.shot.live.mirror video{transform:scaleX(-1)}
+.shot.taken img{display:block}
+.idle{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;padding:24px;color:var(--muted);font:italic 500 1.15rem/1.3 var(--serif)}
+.idle svg{color:var(--gold)}
+.shot.live .idle,.shot.taken .idle{display:none}
+.count{position:absolute;inset:0;display:grid;place-items:center;font:600 7.5rem/1 var(--serif);color:#fff;text-shadow:0 4px 28px rgba(0,0,0,.65);pointer-events:none}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:flash .5s ease-out}
+@keyframes flash{from{opacity:.95}to{opacity:0}}
+.shot.dev img{animation:develop 4.2s ease-out both}
+@keyframes develop{
+  0%{filter:brightness(2.6) contrast(.3) saturate(0) blur(9px);opacity:.2}
+  55%{filter:brightness(1.35) contrast(.75) saturate(.5) sepia(.55) blur(2px);opacity:.85}
+  100%{filter:none;opacity:1}}
+.cap{display:block;width:100%;margin-top:14px;padding:2px 4px 0;background:transparent;border:0;border-bottom:1px dashed rgba(58,7,16,.3);border-radius:0;text-align:center;color:#3a0710;font:400 2rem/1.25 var(--script)}
+.cap::placeholder{color:rgba(58,7,16,.4)}
+.cap:focus-visible{outline:2px solid var(--gold-d);outline-offset:3px}
+.pdate{margin-top:10px;font:italic 500 .82rem var(--serif);letter-spacing:.03em;color:#8a6a3a}
+.ctrls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.booth .btn{padding:13px 26px}
+.btn[hidden],.chip[hidden]{display:none}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--cream);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover:not(:disabled){box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.chip{font:500 .72rem var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.07);color:var(--cream);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.chip[aria-pressed="true"]{background:rgba(232,187,79,.22);border-color:var(--gold);color:var(--gold)}
+.hint{min-height:3em;margin-top:14px;font:italic 500 1.05rem/1.4 var(--serif);color:var(--muted)}
+@media (min-width:900px){
+  .booth{max-width:960px;grid-template-columns:1fr 330px;grid-template-areas:"head pol" "ctl pol";column-gap:6vw;text-align:left}
+  .b-head{align-self:end}.b-ctl{align-self:start}.polaroid{grid-row:1/3;align-self:center;margin:0 auto}
+  .ctrls{justify-content:flex-start}
+}
+
 @media (max-width:760px){
   .slide{padding:76px calc(var(--cw) + 14px) 104px;justify-content:flex-start}
   .open{grid-template-columns:1fr}.figure{max-width:120px;order:-1;justify-self:start}
   .top span:last-child{display:none}.rules{padding:6px 20px}.rules li{grid-template-columns:44px 1fr}
   .beam{display:none}
 }
-@media (prefers-reduced-motion:reduce){.track,.slide>*{transition:none}.face{animation:none}}
+@media (prefers-reduced-motion:reduce){.track,.slide>*{transition:none}.face{animation:none}.polaroid{transition:none}.shot.dev img,.flash.go{animation:none}}
 </style>
 </head>
 <body>
@@ -188,7 +230,46 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
       <p class="lead">Mereka sedang berbaur di antara kalian.</p>
       <p class="mine" id="mine"></p>
       <div class="flow"><span>Cari</span><span>Foto bareng</span><span>Tebak nama</span><span>Bawa pulang gift</span></div>
+      <div class="cta"><button class="btn" data-next>Foto bareng</button></div>
       <p class="tag">One Universe, One Family, One Law</p>
+    </div>
+  </section>
+
+  <section class="slide" id="foto">
+    <div class="booth">
+      <div class="b-head">
+        <p class="eyebrow">Abadikan Momennya</p>
+        <h2>Foto <em>bareng</em> kakak tingkat</h2>
+        <p class="sub">Jepret, tulis tebakan namanya, lalu simpan jadi polaroid.</p>
+      </div>
+      <figure class="polaroid" id="polaroid">
+        <div class="shot" id="shot">
+          <video id="cam" playsinline muted></video>
+          <img id="photo" alt="Hasil foto">
+          <div class="idle">
+            <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.6"/></svg>
+            <span>Fotomu akan muncul di sini</span>
+          </div>
+          <div class="count" id="count" aria-hidden="true"></div>
+          <div class="flash" id="flash"></div>
+        </div>
+        <input class="cap" id="cap" type="text" maxlength="34" autocomplete="off" placeholder="Tebakanku: Kak ..." aria-label="Tulisan di bawah foto">
+        <figcaption class="pdate">Welcoming Party Lawverse · 31 Oktober 2026</figcaption>
+      </figure>
+      <div class="b-ctl">
+        <div class="ctrls">
+          <button class="btn" id="bOpen" type="button">Buka kamera</button>
+          <button class="btn" id="bSnap" type="button">Jepret</button>
+          <button class="btn ghost" id="bFlip" type="button">Balik kamera</button>
+          <button class="chip" id="bTimer" type="button" aria-pressed="false">Timer 3 detik</button>
+          <button class="btn" id="bSave" type="button">Simpan foto</button>
+          <button class="btn ghost" id="bShare" type="button">Bagikan</button>
+          <button class="btn ghost" id="bRetake" type="button">Foto ulang</button>
+          <button class="btn ghost" id="bGallery" type="button">Pilih dari galeri</button>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+        <p class="hint" id="hint" aria-live="polite"></p>
+      </div>
     </div>
   </section>
 
@@ -434,6 +515,131 @@ document.addEventListener('click',e=>{
   initAudio();sfxClick();
 });
 
+/* ===== FOTO POLAROID: kamera > jepret > "cetak" > simpan PNG ===== */
+const shot=$('shot'),cam=$('cam'),photo=$('photo'),cap=$('cap'),hint=$('hint'),polaroid=$('polaroid');
+const BT={open:$('bOpen'),snap:$('bSnap'),flip:$('bFlip'),timer:$('bTimer'),save:$('bSave'),share:$('bShare'),retake:$('bRetake'),gal:$('bGallery')};
+const VIS={idle:['open','gal'],live:['snap','flip','timer','gal'],taken:['save','share','retake']};
+let stream=null,facing='user',useTimer=false,snapping=false,shotCanvas=null,state='idle',source='cam';
+const canShareFiles=(()=>{try{return !!(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.png',{type:'image/png'})]}))}catch(e){return false}})();
+
+function setState(s){
+  state=s;
+  shot.classList.toggle('live',s==='live');
+  shot.classList.toggle('mirror',s==='live'&&facing==='user');
+  shot.classList.toggle('taken',s==='taken');
+  polaroid.classList.toggle('taken',s==='taken');
+  Object.entries(BT).forEach(([k,el])=>{el.hidden=!VIS[s].includes(k)||(k==='share'&&!canShareFiles)});
+}
+function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}cam.srcObject=null}
+function leaveBooth(){if(state==='live'){stopCam();setState('idle');hint.textContent='Tekan Buka kamera, atau pilih foto dari galeri.'}}
+
+async function startCam(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    hint.textContent=window.isSecureContext?'Browser ini tidak bisa membuka kamera. Pilih dari galeri untuk ambil foto lewat HP.':'Kamera hanya bisa dibuka lewat alamat https. Buka halaman ini dari link https, atau pilih dari galeri.';
+    return;
+  }
+  stopCam();
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:1280}},audio:false});
+    cam.srcObject=stream;await cam.play();
+    source='cam';setState('live');hint.textContent='Atur posisi, lalu tekan Jepret.';
+  }catch(e){
+    stopCam();setState('idle');
+    hint.textContent=e&&e.name==='NotAllowedError'?'Akses kamera ditolak. Izinkan kamera di pengaturan browser, atau pilih dari galeri.':'Kamera tidak bisa dibuka. Pilih dari galeri untuk ambil foto lewat HP.';
+  }
+}
+function squareFrom(src,w,h,mirror){
+  const c=document.createElement('canvas');c.width=c.height=1080;
+  const x=c.getContext('2d'),s=Math.min(w,h);
+  if(mirror){x.translate(1080,0);x.scale(-1,1)}
+  x.drawImage(src,(w-s)/2,(h-s)/2,s,s,0,0,1080,1080);
+  return c;
+}
+function finishShot(c){
+  shotCanvas=c;photo.src=c.toDataURL('image/jpeg',.92);
+  setState('taken');
+  shot.classList.remove('dev');void shot.offsetWidth;if(!RM)shot.classList.add('dev');
+  hint.textContent='Tulis tebakan namanya di bawah foto, lalu simpan.';
+}
+function sfxShutter(){
+  if(!sfxOK())return;const t=ac.currentTime;
+  noise(t,.05,{type:'highpass',f1:4000,f2:4000,vol:.2,dest:sfxBus});
+  note(190,t+.02,{type:'square',vol:.05,len:.06,a:.002,dest:sfxBus,wet:false});
+  noise(t+.08,.09,{type:'bandpass',f1:2400,f2:1200,q:1.5,vol:.18,dest:sfxBus});
+}
+async function snap(){
+  if(snapping||!stream)return;snapping=true;BT.snap.disabled=true;
+  const reset=()=>{snapping=false;BT.snap.disabled=false;$('count').textContent=''};
+  if(useTimer){for(let n=3;n>0;n--){$('count').textContent=n;sfxTick(1-n/3);await sleep(1000);if(!stream)return reset()}$('count').textContent=''}
+  const w=cam.videoWidth,h=cam.videoHeight;
+  if(!stream||!w||!h)return reset();
+  const c=squareFrom(cam,w,h,facing==='user');
+  const f=$('flash');f.classList.remove('go');void f.offsetWidth;if(!RM)f.classList.add('go');
+  sfxShutter();stopCam();finishShot(c);reset();
+}
+function fromFile(file){
+  if(!file)return;
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{stopCam();source='file';finishShot(squareFrom(img,img.naturalWidth,img.naturalHeight,false));URL.revokeObjectURL(url)};
+  img.onerror=()=>{URL.revokeObjectURL(url);hint.textContent='Foto tidak bisa dibaca. Coba pilih file JPG atau PNG lain.'};
+  img.src=url;
+}
+async function renderPolaroid(){
+  try{await Promise.all([document.fonts.load('400 90px "Pinyon Script"'),document.fonts.load('italic 500 34px "Cormorant Garamond"')])}catch(e){}
+  const W=1080,H=1380,M=70,P=W-2*M,c=document.createElement('canvas');c.width=W;c.height=H;
+  const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,W*.35,H);g.addColorStop(0,'#fbf3e2');g.addColorStop(1,'#efe0c3');
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.save();x.filter='contrast(1.06) saturate(1.05) sepia(.1)';x.drawImage(shotCanvas,M,M,P,P);x.restore();
+  const v=x.createRadialGradient(W/2,M+P/2,P*.35,W/2,M+P/2,P*.8);
+  v.addColorStop(0,'rgba(40,10,20,0)');v.addColorStop(1,'rgba(40,10,20,.3)');
+  x.fillStyle=v;x.fillRect(M,M,P,P);
+  x.strokeStyle='rgba(58,7,16,.4)';x.lineWidth=2;x.strokeRect(M,M,P,P);
+  const text=cap.value.trim()||'Halo, Justitia!';
+  let size=104;x.font=`400 ${size}px "Pinyon Script", cursive`;
+  while(x.measureText(text).width>P-40&&size>44){size-=4;x.font=`400 ${size}px "Pinyon Script", cursive`}
+  x.fillStyle='#3a0710';x.textAlign='center';x.textBaseline='alphabetic';
+  x.fillText(text,W/2,M+P+150);
+  /* garis emas + belah ketupat */
+  const gy=1228;x.strokeStyle='#b9801f';x.lineWidth=2;
+  x.beginPath();x.moveTo(W/2-150,gy);x.lineTo(W/2-22,gy);x.moveTo(W/2+22,gy);x.lineTo(W/2+150,gy);x.stroke();
+  x.fillStyle='#b9801f';x.beginPath();x.moveTo(W/2,gy-9);x.lineTo(W/2+9,gy);x.lineTo(W/2,gy+9);x.lineTo(W/2-9,gy);x.closePath();x.fill();
+  x.fillStyle='#8a6a3a';x.font='italic 500 34px "Cormorant Garamond", Georgia, serif';
+  x.fillText('Welcoming Party Lawverse · 31 Oktober 2026',W/2,1306);
+  return c;
+}
+const toBlob=c=>new Promise(r=>c.toBlob(r,'image/png'));
+
+BT.open.onclick=startCam;
+BT.snap.onclick=snap;
+BT.flip.onclick=()=>{facing=facing==='user'?'environment':'user';startCam()};
+BT.timer.onclick=()=>{useTimer=!useTimer;BT.timer.setAttribute('aria-pressed',useTimer)};
+BT.gal.onclick=()=>$('file').click();
+$('file').onchange=e=>{fromFile(e.target.files[0]);e.target.value=''};
+BT.retake.onclick=()=>{
+  shotCanvas=null;photo.removeAttribute('src');shot.classList.remove('dev');
+  if(source==='cam')startCam();else{setState('idle');hint.textContent='Tekan Buka kamera, atau pilih foto dari galeri.'}
+};
+BT.save.onclick=async()=>{
+  if(!shotCanvas)return;
+  const blob=await toBlob(await renderPolaroid());
+  if(!blob){hint.textContent='Foto gagal disimpan. Tekan Simpan foto sekali lagi.';return}
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='polaroid-justitia.png';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  hint.textContent='Tersimpan sebagai polaroid-justitia.png. Cek folder Unduhan atau galeri HP.';
+};
+BT.share.onclick=async()=>{
+  if(!shotCanvas)return;
+  try{
+    const blob=await toBlob(await renderPolaroid());
+    await navigator.share({files:[new File([blob],'polaroid-justitia.png',{type:'image/png'})],title:'Polaroid Justitia'});
+  }catch(e){if(!e||e.name!=='AbortError')hint.textContent='Gagal membagikan. Pakai tombol Simpan foto.'}
+};
+cap.addEventListener('keydown',e=>{if(e.key==='Enter')cap.blur()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)leaveBooth()});
+setState('idle');hint.textContent='Tekan Buka kamera, atau pilih foto dari galeri.';
+
 /* slide */
 const slides=[...document.querySelectorAll('.slide')],track=$('track'),prog=$('prog');
 let cur=0;
@@ -447,6 +653,7 @@ function go(n){
   track.style.transform=`translateX(-${cur*100}%)`;
   slides.forEach((s,i)=>{s.classList.toggle('on',i===cur);s.inert=i!==cur;if(i===cur)s.scrollTop=0});
   [...prog.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
+  if(slides[cur].id!=='foto')leaveBooth();
 }
 document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>go(cur+1));
 go(0);
