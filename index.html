@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tebak Siapa Aku · Lawverse 2026</title>
+<meta name="description" content="Games Welcoming Party Lawverse: Tebak Siapa Aku">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1233; --navy2:#13296b; --wine:#6e0a16; --wine2:#4d0710;
+  --gold:#e8bb4f; --gold-d:#b9801f; --cream:#f6e7cf; --muted:#c9b9a0; --line:rgba(232,187,79,.38);
+  --cw:clamp(30px,8vw,130px);
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Jost','Segoe UI',system-ui,sans-serif;
+  --script:'Pinyon Script','Snell Roundhand',cursive;
+  --goldgrad:linear-gradient(180deg,#fff2c0 0%,#f0c453 48%,#b8801f 100%);
+  box-sizing:border-box;color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  color:var(--cream);font:400 1.05rem/1.6 var(--sans);background-color:var(--navy);
+  background-image:
+    radial-gradient(ellipse 30% 22% at 18% 0%,rgba(190,215,255,.5),transparent 70%),
+    radial-gradient(ellipse 30% 22% at 82% 0%,rgba(190,215,255,.5),transparent 70%),
+    linear-gradient(180deg,var(--navy2) 0%,var(--navy) 62%,#2a0a10 82%,#4a1410 100%);
+}
+/* tirai panggung */
+.curtain{position:fixed;top:0;bottom:0;width:var(--cw);z-index:4;pointer-events:none;
+  background:repeating-linear-gradient(90deg,#4d0710 0 9px,#a01728 9px 20px,#6a0c19 20px 30px);
+  box-shadow:inset 0 0 30px rgba(0,0,0,.55)}
+.curtain.l{left:0;clip-path:polygon(0 0,100% 0,86% 45%,100% 100%,0 100%)}
+.curtain.r{right:0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,14% 45%)}
+.beam{position:fixed;top:0;width:36vw;height:70vh;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(200,220,255,.2),transparent);}
+.beam.l{left:calc(var(--cw) + 2vw);clip-path:polygon(18% 0,32% 0,100% 100%,0 100%)}
+.beam.r{right:calc(var(--cw) + 2vw);clip-path:polygon(68% 0,82% 0,100% 100%,0 100%)}
+.top{position:fixed;top:calc(env(safe-area-inset-top,0px) + 20px);left:calc(var(--cw) + 18px);right:calc(var(--cw) + 18px);display:flex;justify-content:space-between;gap:10px;
+  font:500 .7rem var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--gold);z-index:6;pointer-events:none}
+.track{display:flex;height:100%;position:relative;z-index:2;transition:transform .7s cubic-bezier(.65,0,.25,1)}
+.slide{flex:0 0 100%;height:100%;overflow-y:auto;padding:84px calc(var(--cw) + 5vw) 110px;display:flex;flex-direction:column;justify-content:flex-start}
+.slide>*{margin-block:auto;opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.slide.on>*{opacity:1;transform:none}
+.slide.on>*:nth-child(2){transition-delay:.15s}.slide.on>*:nth-child(3){transition-delay:.3s}.slide.on>*:nth-child(4){transition-delay:.45s}
+.eyebrow{font:600 .95rem var(--serif);letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1,h2{font-family:var(--serif);font-weight:600;line-height:1.02;color:var(--cream)}
+h1{font-size:clamp(2.6rem,7vw,5.2rem)}
+h2{font-size:clamp(2.1rem,5vw,3.6rem);margin-bottom:24px}
+em{font:400 1.45em/.9 var(--script);letter-spacing:0;background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  padding:0 .12em;filter:drop-shadow(0 0 14px rgba(232,187,79,.35))}
+.lead{font:italic 500 clamp(1.4rem,3.2vw,2.1rem)/1.3 var(--serif);margin:18px 0 30px;color:var(--muted)}
+.pill{display:inline-block;padding:11px 30px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.09);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  font:600 clamp(1.1rem,2.4vw,1.5rem) var(--serif);letter-spacing:.3em;text-transform:uppercase;color:var(--cream);box-shadow:inset 0 0 18px rgba(232,187,79,.15)}
+
+.open{display:grid;grid-template-columns:1.4fr 1fr;gap:4vw;align-items:center;max-width:1100px;margin:0 auto;width:100%}
+.figure{width:100%;max-width:290px;justify-self:center;padding-top:20px;
+  background:radial-gradient(ellipse 70% 55% at 50% 90%,rgba(210,225,255,.5),transparent 72%)}
+.figure svg{width:100%;height:auto;display:block;color:#070b1f;filter:drop-shadow(0 0 1px rgba(232,187,79,.7))}
+
+.banner{background:linear-gradient(180deg,var(--wine),var(--wine2));border:1px solid var(--gold-d);outline:1px solid var(--line);outline-offset:-9px;border-radius:3px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.wrapw{max-width:760px;margin:0 auto;width:100%}
+.rules{list-style:none;counter-reset:r;padding:12px 34px}
+.rules li{counter-increment:r;display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:clamp(1rem,2vw,1.15rem)}
+.rules li:last-child{border:0}
+.rules li::before{content:counter(r);font:400 2.8rem/1 var(--script);background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.draw{max-width:760px;margin:0 auto;width:100%;text-align:center}
+.draw h2{margin-bottom:8px}.draw .sub{color:var(--muted);margin-bottom:22px}
+.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:380px;margin:0 auto 26px}
+.deck.gone{display:none}
+.back{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold-d);border-radius:5px;outline:1px solid var(--line);outline-offset:-6px;
+  background:linear-gradient(160deg,var(--wine),var(--wine2));color:var(--gold);transition:transform .16s ease-out,opacity .4s,box-shadow .3s}
+.back b{font:600 2.1rem/1 var(--serif)}
+.back small{display:block;font:500 .56rem var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:4px;text-align:center}
+.back.win{box-shadow:0 0 0 2px var(--gold),0 0 34px rgba(232,187,79,.7)}
+.back.dim{opacity:.22}
+.reveal{display:none;perspective:1000px}.reveal.on{display:block}
+.face{padding:30px 28px 28px;max-width:380px;margin:0 auto 24px;text-align:left;position:relative;animation:flip .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes flip{from{transform:rotateY(90deg) scale(.9);opacity:0}to{transform:none;opacity:1}}
+.face .k{font:600 .7rem var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.face .n{font:600 clamp(5rem,20vw,7rem)/1 var(--serif);background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0}
+.face h3{font:700 1.7rem/1.15 var(--serif);margin-bottom:10px}
+.face p{color:var(--cream);opacity:.85;line-height:1.6}
+.face .st{position:absolute;top:24px;right:22px;border:1px solid var(--gold);color:var(--gold);font:600 .6rem var(--sans);letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;transform:rotate(5deg)}
+.reset{background:none;border:0;color:var(--muted);font:400 .72rem var(--sans);text-decoration:underline;cursor:pointer;margin-top:18px;opacity:.7}
+
+.end{text-align:center;max-width:760px;margin:0 auto}
+.end .lead{margin-inline:auto;max-width:30ch}
+.mine{font:600 .9rem var(--serif);letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:-6px 0 22px}
+.flow{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.flow span{font:500 .72rem var(--sans);letter-spacing:.18em;text-transform:uppercase;padding:9px 18px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.07)}
+.tag{margin-top:34px;font:italic 500 1.05rem var(--serif);color:var(--muted);letter-spacing:.06em}
+
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--goldgrad);color:#3a0710;border:0;border-radius:99px;padding:14px 36px;font:600 .9rem var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(232,187,79,.28)}
+.btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 12px 30px rgba(232,187,79,.45)}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.55;cursor:default}
+.cta{margin-top:32px}
+.prog{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);display:flex;justify-content:center;gap:10px;z-index:6;pointer-events:none}
+.prog i{width:8px;height:8px;border-radius:50%;background:rgba(246,231,207,.3);transition:.3s}
+.prog i.on{background:var(--gold);width:26px;border-radius:99px}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+@media (max-width:760px){
+  .slide{padding:76px calc(var(--cw) + 14px) 104px;justify-content:flex-start}
+  .open{grid-template-columns:1fr}.figure{max-width:120px;order:-1;justify-self:start}
+  .top span:last-child{display:none}.rules{padding:6px 20px}.rules li{grid-template-columns:44px 1fr}
+  .beam{display:none}
+}
+@media (prefers-reduced-motion:reduce){.track,.slide>*{transition:none}.face{animation:none}}
+</style>
+</head>
+<body>
+<div class="beam l"></div><div class="beam r"></div>
+<div class="curtain l"></div><div class="curtain r"></div>
+<div class="top"><span>Welcoming Party · Lawverse</span><span>31 Oktober 2026</span></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="who" viewBox="0 0 200 260">
+    <path d="M30 258c0-52 30-82 70-82s70 30 70 82z" fill="currentColor"/>
+    <circle cx="100" cy="92" r="58" fill="currentColor"/>
+    <text x="100" y="118" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-weight="700" font-size="88" fill="#e8bb4f">?</text>
+  </symbol>
+</svg>
+
+<main class="track" id="track">
+
+  <section class="slide on" id="pembuka">
+    <div class="open">
+      <div>
+        <p class="eyebrow">You are invited to play</p>
+        <h1>Halo, muda-mudi <em>Justitia!</em></h1>
+        <p class="lead">Ayo bermain games.</p>
+        <div class="pill">Tebak Siapa Aku</div>
+        <div class="cta"><button class="btn" data-next>Mulai</button></div>
+      </div>
+      <div class="figure"><svg role="img" aria-label="Siluet seseorang dengan tanda tanya"><use href="#who"/></svg></div>
+    </div>
+  </section>
+
+  <section class="slide" id="aturan">
+    <div class="wrapw">
+      <p class="eyebrow">Cara Bermain</p>
+      <h2>Aturan <em>main</em></h2>
+      <ol class="rules banner">
+        <li>Setiap peserta mendapat satu karakter rahasia yang dipilih secara acak.</li>
+        <li>Pelajari petunjuk pada karakter itu dengan saksama.</li>
+        <li>Cari kakak tingkat yang sesuai dengan ciri-cirinya selama acara berlangsung.</li>
+        <li>Ajak foto bareng, lalu tebak namanya. Jawaban yang benar berhak mendapat gift menarik.</li>
+      </ol>
+      <div class="cta"><button class="btn" data-next>Siap, lanjut</button></div>
+    </div>
+  </section>
+
+  <section class="slide" id="karakter">
+    <div class="draw">
+      <p class="eyebrow">Tarik Kartumu</p>
+      <h2>Siapa <em>karaktermu?</em></h2>
+      <p class="sub" id="sub">Ada 9 karakter rahasia. Kamu hanya dapat satu kartu, dipilih acak.</p>
+      <div class="deck" id="deck"></div>
+      <div class="reveal" id="reveal"></div>
+      <button class="btn" id="shuffleBtn">Acak Kartu</button>
+      <div class="cta" id="nextWrap" style="display:none"><button class="btn" data-next>Lanjut</button></div>
+      <button class="reset" id="reset">Panitia: reset kartu di perangkat ini</button>
+    </div>
+  </section>
+
+  <section class="slide" id="penutup">
+    <div class="end">
+      <p class="eyebrow">Permainan Dimulai</p>
+      <h1>Selamat <em>mencari,</em> ya!</h1>
+      <p class="lead">Mereka sedang berbaur di antara kalian.</p>
+      <p class="mine" id="mine"></p>
+      <div class="flow"><span>Cari</span><span>Foto bareng</span><span>Tebak nama</span><span>Bawa pulang gift</span></div>
+      <p class="tag">One Universe, One Family, One Law</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="prog" id="prog" aria-hidden="true"></div>
+
+<script>
+/* Ubah data karakter di sini: title = julukan, clue = petunjuk */
+const CHARACTERS=[
+  {title:"Si Bijak Perpustakaan",clue:"Hobinya membaca putusan pengadilan sampai larut malam. Sering membawa kopi dan catatan kecil."},
+  {title:"Si Juara Debat",clue:"Suaranya lantang saat moot court. Jago membuat lawan bicara terdiam."},
+  {title:"Si Tukang Foto",clue:"Selalu siap dengan kamera di setiap acara kampus. Jepretannya jadi dokumentasi resmi."},
+  {title:"Si Penyanyi Kampus",clue:"Kalau ada acara, dialah yang dipanggil ke panggung. Suka bawa gitar ke mana-mana."},
+  {title:"Si Penggerak Organisasi",clue:"Rapat adalah rumah keduanya. Notulensinya rapi, jadwalnya selalu padat."},
+  {title:"Si Pecinta Kopi",clue:"Katanya tugas tidak akan selesai tanpa segelas kopi. Hafal semua kedai di sekitar kampus."},
+  {title:"Si Penguasa Pidana",clue:"Hafal pasal demi pasal di luar kepala. Soal pidana, jawabannya selalu lengkap."},
+  {title:"Si Super Aktif",clue:"Tidak pernah terlihat diam. Dari kepanitiaan, lomba, sampai kegiatan sosial, semua diikuti."},
+  {title:"Si Penghibur",clue:"Candaannya bikin suasana cair seketika. Di mana dia hadir, tawa ikut datang."}
+];
+const KEY='justitia-kartu';
+const $=id=>document.getElementById(id), pad=i=>String(i+1).padStart(2,'0');
+let mine=null;
+try{const v=localStorage.getItem(KEY);if(v!==null&&CHARACTERS[+v])mine=+v}catch(e){}
+
+const deck=$('deck');
+deck.innerHTML=CHARACTERS.map((_,i)=>`<div class="back"><div><b>${pad(i)}</b><small>Karakter</small></div></div>`).join('');
+const backs=[...deck.children];
+
+function showCard(i){
+  const c=CHARACTERS[i];
+  deck.classList.add('gone');
+  $('reveal').innerHTML=`<div class="face banner"><span class="st">Rahasiakan</span><div class="k">Karakter nomor</div><div class="n">${pad(i)}</div><h3>${c.title}</h3><p>${c.clue}</p></div>`;
+  $('reveal').classList.add('on');
+  $('shuffleBtn').style.display='none';
+  $('nextWrap').style.display='block';
+  $('sub').textContent='Ini kartumu. Jangan kasih tahu siapa pun, ya.';
+  $('mine').textContent=`Kartumu: nomor ${pad(i)} · ${c.title}`;
+}
+if(mine!==null)showCard(mine);
+
+$('shuffleBtn').onclick=()=>{
+  const b=$('shuffleBtn');b.disabled=true;b.textContent='Mengacak...';
+  const t=setInterval(()=>backs.forEach(el=>{
+    el.style.transform=`translate(${(Math.random()-.5)*60}px,${(Math.random()-.5)*60}px) rotate(${(Math.random()-.5)*28}deg)`;
+  }),170);
+  setTimeout(()=>{
+    clearInterval(t);
+    backs.forEach(el=>el.style.transform='');
+    const pick=Math.floor(Math.random()*CHARACTERS.length);
+    backs.forEach((el,i)=>el.classList.add(i===pick?'win':'dim'));
+    setTimeout(()=>{
+      mine=pick;
+      try{localStorage.setItem(KEY,pick)}catch(e){}
+      showCard(pick);
+    },1100);
+  },2000);
+};
+$('reset').onclick=()=>{
+  if(!confirm('Reset kartu di perangkat ini? Peserta bisa mengacak lagi.'))return;
+  try{localStorage.removeItem(KEY)}catch(e){}
+  location.hash='#pembuka';location.reload();
+};
+
+/* slide */
+const slides=[...document.querySelectorAll('.slide')],track=$('track'),prog=$('prog');
+let cur=0;
+slides.forEach(()=>prog.appendChild(document.createElement('i')));
+const DRAW=slides.findIndex(s=>s.id==='karakter');
+function go(n,fromHash){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  if(n>DRAW&&mine===null)n=DRAW;
+  cur=n;
+  track.style.transform=`translateX(-${cur*100}%)`;
+  slides.forEach((s,i)=>{s.classList.toggle('on',i===cur);if(i===cur)s.scrollTop=0});
+  [...prog.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
+  if(!fromHash&&location.hash!=='#'+slides[cur].id)history.replaceState(null,'','#'+slides[cur].id);
+}
+document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>go(cur+1));
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
+  if(['ArrowRight','PageDown'].includes(e.key))go(cur+1);
+  if(['ArrowLeft','PageUp'].includes(e.key))go(cur-1);
+});
+let sx=0,sy=0;
+addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(cur+(dx<0?1:-1));
+});
+function fromHash(){const i=slides.findIndex(s=>'#'+s.id===location.hash);go(i<0?0:i,true)}
+addEventListener('hashchange',fromHash);fromHash();
+</script>
+</body>
+</html>
