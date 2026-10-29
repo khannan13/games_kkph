@@ -19,7 +19,8 @@
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{touch-action:pan-y}
 body{
   color:var(--cream);font:400 1.05rem/1.6 var(--sans);background-color:var(--navy);
   background-image:
@@ -438,30 +439,17 @@ const slides=[...document.querySelectorAll('.slide')],track=$('track'),prog=$('p
 let cur=0;
 slides.forEach(()=>prog.appendChild(document.createElement('i')));
 const DRAW=slides.findIndex(s=>s.id==='karakter');
-function go(n,fromHash){
+function go(n){
   n=Math.max(0,Math.min(slides.length-1,n));
   if(n>DRAW&&mine===null)n=DRAW;
   if(n!==cur)sfxSwish(.45);
   cur=n;
   track.style.transform=`translateX(-${cur*100}%)`;
-  slides.forEach((s,i)=>{s.classList.toggle('on',i===cur);if(i===cur)s.scrollTop=0});
+  slides.forEach((s,i)=>{s.classList.toggle('on',i===cur);s.inert=i!==cur;if(i===cur)s.scrollTop=0});
   [...prog.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
-  if(!fromHash&&location.hash!=='#'+slides[cur].id)history.replaceState(null,'','#'+slides[cur].id);
 }
 document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>go(cur+1));
-addEventListener('keydown',e=>{
-  if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
-  if(['ArrowRight','PageDown'].includes(e.key))go(cur+1);
-  if(['ArrowLeft','PageUp'].includes(e.key))go(cur-1);
-});
-let sx=0,sy=0;
-addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
-addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
-  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(cur+(dx<0?1:-1));
-});
-function fromHash(){const i=slides.findIndex(s=>'#'+s.id===location.hash);go(i<0?0:i,true)}
-addEventListener('hashchange',fromHash);fromHash();
+go(0);
 </script>
 </body>
 </html>
