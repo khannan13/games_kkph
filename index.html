@@ -98,7 +98,6 @@ em{font:400 1.45em/.9 var(--script);letter-spacing:0;background:var(--goldgrad);
 .face h3{font:700 1.7rem/1.15 var(--serif);margin-bottom:10px}
 .face p{color:var(--cream);opacity:.85;line-height:1.6}
 .face .st{position:absolute;top:20px;right:22px;border:1px solid var(--gold);color:var(--gold);font:600 .6rem var(--sans);letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;transform:rotate(5deg)}
-.reset{background:none;border:0;color:var(--muted);font:400 .72rem var(--sans);text-decoration:underline;cursor:pointer;margin-top:18px;opacity:.7}
 
 .end{text-align:center;max-width:760px;margin:0 auto}
 .end .lead{margin-inline:auto;max-width:30ch}
@@ -233,12 +232,11 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
     <div class="draw">
       <p class="eyebrow">Tarik Kartumu</p>
       <h2>Siapa <em>karaktermu?</em></h2>
-      <p class="sub" id="sub" aria-live="polite">Ada 9 karakter rahasia. Kamu hanya dapat satu kartu, dipilih acak.</p>
+      <p class="sub" id="sub" aria-live="polite">Ada 9 karakter rahasia. Kamu hanya dapat satu kartu, dipilih acak, dan tidak bisa diulang.</p>
       <div class="stage" id="deck" aria-hidden="true"></div>
       <div class="reveal" id="reveal"></div>
       <button class="btn" id="shuffleBtn">Acak Kartu</button>
       <div class="cta" id="nextWrap" style="display:none"><button class="btn" data-next>Lanjut</button></div>
-      <button class="reset" id="reset">Panitia: reset kartu di perangkat ini</button>
     </div>
   </section>
 
@@ -323,9 +321,15 @@ const CHARACTERS=[
   {title:"Si Penghibur",clue:"Candaannya bikin suasana cair seketika. Di mana dia hadir, tawa ikut datang."}
 ];
 const KEY='justitia-kartu';
+/* KHUSUS PANITIA (jangan dibagikan ke peserta). Ganti kode ini sebelum acara.
+   ?reset=KODE  -> hapus kartu di perangkat itu, kembali seperti pengunjung baru
+   ?coba=KODE   -> mode coba: bisa acak berkali-kali, hasil tidak disimpan */
+const PANITIA_KODE='lawverse2026';
+const QS=new URLSearchParams(location.search),TEST=QS.get('coba')===PANITIA_KODE;
+if(QS.get('reset')===PANITIA_KODE){try{localStorage.removeItem(KEY)}catch(e){}try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}}
 const $=id=>document.getElementById(id), pad=i=>String(i+1).padStart(2,'0');
 let mine=null;
-try{const v=localStorage.getItem(KEY);if(v!==null&&CHARACTERS[+v])mine=+v}catch(e){}
+if(!TEST)try{const v=localStorage.getItem(KEY);if(v!==null&&CHARACTERS[+v])mine=+v}catch(e){}
 
 const deck=$('deck');
 deck.innerHTML=CHARACTERS.map((_,i)=>`<div class="back"><b>${pad(i)}</b><span class="orn"></span></div>`).join('');
@@ -385,7 +389,7 @@ function sparkle(){
   }
 }
 function finish(id){
-  mine=id;try{localStorage.setItem(KEY,id)}catch(e){}
+  mine=id;if(!TEST)try{localStorage.setItem(KEY,id)}catch(e){}
   showCard(id);busy=false;
 }
 fan();
@@ -433,11 +437,6 @@ $('shuffleBtn').onclick=async()=>{
   w.style.transition='transform .38s ease-in';T(w,0,-4,0,1.4,90);sfxSwish(.8);
   await sleep(380);
   finish(pickId);
-};
-$('reset').onclick=()=>{
-  if(!confirm('Reset kartu di perangkat ini? Peserta bisa mengacak lagi.'))return;
-  try{localStorage.removeItem(KEY)}catch(e){}
-  location.hash='#pembuka';location.reload();
 };
 
 /* ===== SUARA: musik latar + efek, dibuat langsung di browser (tanpa file, bebas hak cipta) ===== */
