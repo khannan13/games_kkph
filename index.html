@@ -96,7 +96,7 @@ em{font:400 1.45em/.9 var(--script);letter-spacing:0;background:var(--goldgrad);
 .face .k{font:600 .7rem var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
 .face .n{font:600 clamp(5rem,20vw,7rem)/1 var(--serif);background:var(--goldgrad);-webkit-background-clip:text;background-clip:text;color:transparent;margin:4px 0}
 .face h3{font:700 1.7rem/1.15 var(--serif);margin-bottom:10px}
-.face p{color:var(--cream);opacity:.85;line-height:1.6}
+.face p{font-size:.98rem;color:var(--cream);opacity:.85;line-height:1.6}
 .face .st{position:absolute;top:20px;right:22px;border:1px solid var(--gold);color:var(--gold);font:600 .6rem var(--sans);letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;transform:rotate(5deg)}
 
 .end{text-align:center;max-width:760px;margin:0 auto}
@@ -301,15 +301,15 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 <script>
 /* Ubah data karakter di sini: title = julukan, clue = petunjuk */
 const CHARACTERS=[
-  {title:"Si Bijak Perpustakaan",clue:"Hobinya membaca putusan pengadilan sampai larut malam. Sering membawa kopi dan catatan kecil."},
-  {title:"Si Juara Debat",clue:"Suaranya lantang saat moot court. Jago membuat lawan bicara terdiam."},
-  {title:"Si Tukang Foto",clue:"Selalu siap dengan kamera di setiap acara kampus. Jepretannya jadi dokumentasi resmi."},
-  {title:"Si Penyanyi Kampus",clue:"Kalau ada acara, dialah yang dipanggil ke panggung. Suka bawa gitar ke mana-mana."},
-  {title:"Si Penggerak Organisasi",clue:"Rapat adalah rumah keduanya. Notulensinya rapi, jadwalnya selalu padat."},
-  {title:"Si Pecinta Kopi",clue:"Katanya tugas tidak akan selesai tanpa segelas kopi. Hafal semua kedai di sekitar kampus."},
-  {title:"Si Penguasa Pidana",clue:"Hafal pasal demi pasal di luar kepala. Soal pidana, jawabannya selalu lengkap."},
-  {title:"Si Super Aktif",clue:"Tidak pernah terlihat diam. Dari kepanitiaan, lomba, sampai kegiatan sosial, semua diikuti."},
-  {title:"Si Penghibur",clue:"Candaannya bikin suasana cair seketika. Di mana dia hadir, tawa ikut datang."}
+  {title:"Si Warlok Jurnalistik",clue:"Aku adalah mahasiswi semester 3, orangnya suka main billiard setiap malam minggu, ramah dan natural fanny, dan ofc warga lokal (warlok). Kalau kuliah pakai kerudung pasmina, suka nongkrong di Brotherhood, Sriwed Djaya, Mood Station dll. Tas putih, motor Beat Racing, sandal Crocs KW, tinggi 160+, BB 47. Kalau di KKPH, aku jadi divisi yang paling sibuk, setiap bulannya pasti selalu ada, yap jurnalistik."},
+  {title:"Si Anak Lanang Chill",clue:"Aku adalah mahasiswa semester 3, anak lanang, bisa menyelam apalagi menyelam hatinya, tipe orang yang chill abis. Sering dikira plecit, padahal bosnya plecit. Iya, suka olahraga. Kalau di KKPH, divisi yang paling identik karena ganteng sendirian."},
+  {title:"Si Jawa Pride",clue:"Aku adalah mahasiswa semester 3, anak lanang Jawa pride, hobinya BL atau enggak mancing. Orang-orang tahu aku punya gantungan naylong yang selalu dibawa ke mana-mana. Aku juga sering pakai cincin antik. Kalau ngomong pakai bahasa Indonesia agak kagok, koh. Kalau di KKPH, seringnya jadi operator, koh."},
+  {title:"Si Semester Akhir Tangguh",clue:"Aku adalah mahasiswi semester akhir, tapi nggak akhir banget. Banyak bebannya, tapi Tuhan tahu tidak salah memberikan bahu kepada orang yang tepat. Aku juga suka ikut lomba hukum sama teman-temanku yang lain. Kalau kalian tahu aku, pasti sering ketemu di kampus, apalagi sampai malam. Kalau di KKPH, emm, aku ada di antara deretan feed Instagram struktur di atas."},
+  {title:"Si Pembawa Informasi",clue:"Aku adalah mahasiswi semester 3, cewek bumi, cewek laut, cewek apalagi ya, mamba juga bisa. Kalau di KKPH, yang kemarin sering woro-woro informasi ke kalian di grup, ngerekap data kalian juga buat di welcoming party."},
+  {title:"Si Penggerak di Balik Layar",clue:"Aku adalah mahasiswi semester tua tapi enggak tua banget, jabatan di KKPH lumayan, bismillah Allahuakbar. Punya anak-anak yang alhamdulillah masyaAllah nurutnya. Bukan warga lokal, karena aslinya dari mana-mana, keliling Indonesia. Jarang kelihatan di depan kalau event, tapi di belakang nggak usah ditanya lagi. Aku juga suka life update kalau di mana-mana, apalagi di second account, makanya demen masuk divisi itu."},
+  {title:"Si Tepat Waktu Kalem",clue:"Aku adalah sosok perempuan yang TINGGI-nya 165 cm, foto profil Instagramnya di Curug Jenggala, penduduk Kebumen asli, ngekos di Tentrem Exclusive, jarang kelihatan, suka pakai cardigan, semester tengah-tengah. Jarang muncul, tapi kalau lapar muncul paling depan, si paling TEPAT WAKTU. Kalau di KKPH, di divisi yang kalem, tenang, dan tentram, sudah ahli di bidang makanan, jadi masuk divisi konsumsi di welcoming party."},
+  {title:"Si Limited Edition",clue:"Aku adalah member Limited Edition, shining shimmering splendid, sangat nonchalant, super cool kalau diam. Dari dev jurnalistik, memiliki pribadi yang sangat TITUT, ceria, suka tertawa, humble ketika sudah mengenal seseorang, dan senang dengan hal-hal positif. Saya juga suka mencoba hal baru, belajar, dan berkenalan dengan orang lain. Bagi saya, menjadi diri sendiri dan terus berkembang adalah hal yang penting. Kalau di KKPH, aku juga masuk ke divisi yang super sibuk setiap bulan. Namaku depannya K/N.."},
+  {title:"Si Dokumentator UKM",clue:"Aku adalah manusia yang kesehariannya sibuk mendokumentasikan setiap kegiatan UKM KKPH. Tinggi badan sekitar 150 cm, sering mengenakan pashmina, dan entah mengapa kerap dicap judes, padahal aslinya tidak sejudes itu. Saat ini aku berada di fase mahasiswa semester tengah, tidak lagi mahasiswa baru, tetapi juga belum bisa disebut mahasiswa tua. Intinya, sedang berada di tengah-tengah kehidupan perkuliahan dan segala dramanya."}
 ];
 const KEY='justitia-kartu';
 /* KHUSUS PANITIA (jangan dibagikan ke peserta). Ganti kode ini sebelum acara.
